@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO List APP</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class=" h-dvh bg-violet-600 flex justify-center items-center">
+
+    <div class="py-3 px-2 app-container bg-white min-w-xs max-w-xl w-5/12 rounded-sm">
+        <div class="text-2xl font-sm text-center mb-4">To-do List App</div>
+
+        <!-- text-box -->
+        <div class=" flex flex-col justify-center items-center gap-1">
+            <div
+                class="flex items-center border pl-3 gap-2 bg-white border-gray-500/30 h-[46px] rounded-md overflow-hidden max-w-md w-full">
+
+                <input type="text" id="task-input" placeholder="Enter the Tasks ...."
+                    class="input-task w-full h-full outline-none text-gray-500 placeholder-gray-500 text-sm">
+            </div>
+
+            <button type="button" id="add-btn"
+                class="add-button px-6 py-2 active:scale-95 transition bg-indigo-600 rounded-md text-white text-xl font-medium overflow-hidden max-w-md w-full">ADD
+                TASK</button>
+
+            <div id="task-list" class="w-full flex flex-col gap-2 items-center mt-3"></div>
+        </div>
+
+    </div>
+    <!-- Adding Script -->
+    <script>
+        // Grab DOM elements
+        const taskInput = document.getElementById('task-input');
+        const addBtn = document.getElementById('add-btn');
+        const taskList = document.getElementById('task-list');
+
+        // Function to add a new task
+        function addTask() {
+            const taskText = taskInput.value.trim();
+
+            // Alert if the user tries to add an empty task
+            if (taskText === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            // Create the task container row (Using your exact tailwind classes)
+            const taskItem = document.createElement('div');
+            taskItem.className = "my-task flex items-center justify-between px-2 text-zinc-900 border-gray-500/30 bg-gray-300 rounded-md h-[46px] overflow-hidden max-w-md w-full";
+
+            // Create text container
+            const textSpan = document.createElement('div');
+            textSpan.className = "my-task grow truncate pr-2";
+            textSpan.innerText = taskText;
+
+            // Create Edit Button
+            const editBtn = document.createElement('button');
+            editBtn.type = "button";
+            editBtn.className = "flex-none px-2 ml-1 py-1 active:scale-95 transition bg-violet-800 rounded text-white text-sm font-sm";
+            editBtn.innerText = "Edit";
+
+            // Create Delete Button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = "button";
+            deleteBtn.className = "flex-none px-2 ml-1 py-1 active:scale-95 transition bg-red-500 rounded text-white text-sm font-sm";
+            deleteBtn.innerText = "Delete";
+
+            // Append elements together
+            taskItem.appendChild(textSpan);
+            taskItem.appendChild(editBtn);
+            taskItem.appendChild(deleteBtn);
+            taskList.appendChild(taskItem);
+
+            // Clear input field after adding
+            taskInput.value = "";
+
+            // --- BUTTON FUNCTIONALITIES ---
+
+            // Delete Task
+            deleteBtn.addEventListener('click', () => {
+                taskItem.remove();
+            });
+
+            // Edit Task
+            editBtn.addEventListener('click', () => {
+                if (editBtn.innerText === "Edit") {
+                    // Switch to edit mode: replace text with an input field
+                    const currentText = textSpan.innerText;
+                    textSpan.innerHTML = `<input type="text" class="bg-transparent border-b border-violet-800 outline-none w-full text-zinc-900" value="${currentText}">`;
+                    editBtn.innerText = "Save";
+                    editBtn.classList.replace("bg-violet-800", "bg-green-600");
+                } else {
+                    // Save mode: lock in the new text
+                    const updatedText = textSpan.querySelector('input').value.trim();
+                    if (updatedText === "") {
+                        alert("Task cannot be empty!");
+                        return;
+                    }
+                    textSpan.innerHTML = updatedText;
+                    editBtn.innerText = "Edit";
+                    editBtn.classList.replace("bg-green-600", "bg-violet-800");
+                }
+            });
+        }
+
+        // Event Listeners
+        addBtn.addEventListener('click', addTask);
+
+        // Allow pressing 'Enter' key to add tasks quickly
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
